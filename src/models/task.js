@@ -9,6 +9,11 @@ const Task = mongoose.model('Task', {
     completed: {
         type: Boolean,
         default: false
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User' // Get access to the whole User files so we can find the true owner with ID
     }
 })
 
