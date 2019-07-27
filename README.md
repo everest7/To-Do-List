@@ -5,6 +5,9 @@ See the full API public documentation [here](https://documenter.getpostman.com/v
 
 ---
 **Post** Create User
+```
+localhost:3000/users
+```
 
 Create a `User` on the To Do List Application.
 The response of this request give you the basic information about the `User`. Such as `Token` , `Email` and `Username`. These are automatically stored in the Postman environment for testing.
