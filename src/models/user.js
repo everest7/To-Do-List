@@ -7,11 +7,13 @@ const Task = require('./task')
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true // name field is required
+    required: true, // name field is required
+    trim: true
   },
   email: {
     type: String, 
     unique: true,
+    trim: true,
     required: true,
     validate(value) {
       if (!validator.isEmail(value)) {
@@ -32,6 +34,7 @@ const userSchema = new mongoose.Schema({
   },
   age: {
     type: Number,
+    default: 0,
     validate(value) { // validate function 
       if (value < 0) {
         throw new Error('Age must be a positive number.')
@@ -43,7 +46,12 @@ const userSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  avatar: {
+    type: Buffer
+  }
+}, {
+  timestamps: true
 })
 
 // Virtual property, the relationship between user and task
@@ -58,14 +66,17 @@ userSchema.virtual('tasks', {
 userSchema.methods.toJSON = function () {
   const user = this
   const userObject = user.toObject()
+
   delete userObject.password
   delete userObject.tokens
+  delete userObject.avatar
+
   return userObject
 }
 
 userSchema.methods.generateAuthToken = async function () {
   const user = this
-  const token = jwt.sign({ _id: user._id.toString() }, 'thisismynewcourse')
+  const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
   user.tokens = user.tokens.concat({ token })
   await user.save()
   return token
